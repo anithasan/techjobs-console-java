@@ -3,12 +3,15 @@ package org.launchcode.techjobs.console;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.Iterator;
 
 /**
  * Created by LaunchCode
  */
-public class TechJobs {
+public class TechJobs  {
 
+    //static means there's only one instance at class level
+    //All objects of TechJobs share the same instance of scanner
     private static Scanner in = new Scanner(System.in);
 
     public static void main (String[] args) {
@@ -57,11 +60,13 @@ public class TechJobs {
                 String searchField = getUserSelection("Search by:", columnChoices);
 
                 // What is their search term?
+
                 System.out.println("\nSearch term: ");
                 String searchTerm = in.nextLine();
 
                 if (searchField.equals("all")) {
-                    System.out.println("Search all fields not yet implemented.");
+                    //System.out.println("Search all fields not yet implemented.");
+                    printJobs(JobData.findByValue(searchTerm));
                 } else {
                     printJobs(JobData.findByColumnAndValue(searchField, searchTerm));
                 }
@@ -92,7 +97,7 @@ public class TechJobs {
             for (Integer j = 0; j < choiceKeys.length; j++) {
                 System.out.println("" + j + " - " + choices.get(choiceKeys[j]));
             }
-
+            //waits for the user input to be integer (0 or 1)
             choiceIdx = in.nextInt();
             in.nextLine();
 
@@ -111,6 +116,29 @@ public class TechJobs {
     // Print a list of jobs
     private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
 
-        System.out.println("printJobs is not implemented yet");
+        if (someJobs.size() == 0){
+            System.out.println("Result not found");
+        }
+
+        for(HashMap somejob: someJobs)
+        {
+            System.out.println("*****");
+
+            //somejob is a hashmap of key and values.
+            //keys are obtained as keyset..to walkover the keyset one by one, get the iterator on the keyset
+             Iterator keys = somejob.keySet().iterator();
+             while(keys.hasNext())
+            {
+                String keyname = (String)keys.next();
+                System.out.println(keyname+":\t"+somejob.get(keyname));
+            }
+            System.out.println("*****\n");
+        }
+
+        //System.out.println("printJobs is not implemented yet");
     }
 }
+/*To do this, you'll need to iterate over an ArrayList of jobs. Each job is itself a HashMap.
+        While you can get each of the items out of the HashMap using the known keys ("employer", "location", etc),
+        think instead about creating a nested loop to loop over each HashMap. If a new field is added to the job records,
+        this approach will print out the new field without any updates to printJobs.*/
